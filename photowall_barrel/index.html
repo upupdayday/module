@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            padding: 10px;
+        }
+        
+        header {
+            width: 500px;
+            margin: 0 auto;
+            /* text-align: center; */
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #img-search {
+            width: 400px;
+            height: 30px;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        #go {
+            /* style: none; */
+            margin-left: 10px;
+            height: 30px;
+            border: 2px solid red;
+            border-radius: 3px;
+            background-color: #eee;
+            padding: 5px;
+            font-size: 16px;
+            /* line-height: 30px; */
+        }
+        
+        #load {
+            visibility: hidden;
+            height: 20px;
+            /* border: 1px solid red; */
+        }
+        
+        main {
+            position: relative;
+            /* padding: 10px; */
+        }
+        
+        main::after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+        
+        main>figure {
+            float: left;
+            padding: 5px;
+        }
+        
+        main>figure img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <input id="img-search" placeholder="enter what you want" type="text">
+        <a id="go">GO</a>
+        <!-- <button id="go">GO</button> -->
+    </header>
+    <main>
+    </main>
+    <div id="load">我是看不见的</div>
+    <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        var curPage = 1;
+        var perPageCount = 20;
+        var $mainNode = $('main');
+        var mainNodeWidth = parseFloat($mainNode.width());
+        var rowTotalWidth = 0;
+        var rowBaseHeight = 200;
+        var rowList = [];
+        var $searchInput = $('#img-search');
+        var $go = $('#go');
+
+        var isDataArrive = true
+
+        $go.click(
+            throttle(function() {
+                init()
+            }, 200)
+        )
+
+        $(window).resize(
+            throttle(function() {
+                init()
+            }, 200)
+        )
+
+        $(window).scroll(function() {
+            if (!isDataArrive)
+                return
+            if (isDataArrive) {
+                if (isVisible($('#load'))) {
+                    start()
+                }
+            }
+        })
+
+        function throttle(fn, delay) {
+            var timer = null
+            return function() {
+                var context = this
+                clearTimeout(timer)
+                timer = setTimeout(function() {
+                    fn.apply(context, arguments);
+                }, delay)
+            }
+        }
+
+        function init() {
+            $mainNode.html('');
+            rowList = [];
+            rowTotalWidth = 0;
+            curPage = 1;
+            start();
+        }
+
+        function start() {
+            getData($searchInput.val(), render);
+            isDataArrive = false
+        }
+
+
+        function getData(keyword, callBack) {
+            $.ajax({
+                url: 'https://pixabay.com/api/',
+                dataType: 'jsonp',
+                data: {
+                    key: '8521696-ba89fe471d953cc300d05b61a',
+                    q: keyword,
+                    image_type: 'photo',
+                    page: curPage,
+                    per_page: perPageCount
+                }
+            }).done(function(ret) {
+                if (ret) {
+                    callBack(ret)
+                    curPage++;
+                } else {
+                    console.log("errors")
+                }
+            })
+        }
+
+        function render(data) {
+            isDataArrive = true
+            console.log(data.hits)
+            data.hits.forEach(function(imgInfo) {
+                var rowHeight;
+                imgInfo.ratio = imgInfo.webformatWidth / imgInfo.webformatHeight;
+                imgInfo.imgWidthShow = imgInfo.ratio * rowBaseHeight;
+                if (imgInfo.imgWidthShow + rowTotalWidth <= mainNodeWidth) {
+                    rowList.push(imgInfo);
+                    rowTotalWidth += imgInfo.imgWidthShow;
+                } else {
+                    rowHeight = (mainNodeWidth / rowTotalWidth) * rowBaseHeight;
+                    layout(rowList, rowHeight);
+                    rowList = [imgInfo];
+                    rowTotalWidth = imgInfo.imgWidthShow;
+                }
+            });
+        }
+
+        function layout(rowList, rowHeight) {
+            rowList.forEach(function(imgInfo) {
+                var $figureNode = $('<figure></figure>');
+                var $imgNode = $('<img >')
+                $imgNode[0].src = imgInfo.webformatURL;
+                $figureNode.append($imgNode);
+                $figureNode.css('width', rowHeight * imgInfo.ratio);
+                $figureNode.css('height', rowHeight);
+                $mainNode.append($figureNode)
+            })
+        }
+
+        function isVisible($node) {
+            var windowHeight = $(window).height()
+            var offsetTop = $node.offset().top
+            var scrollTop = $(window).scrollTop()
+            if (windowHeight + scrollTop > offsetTop) {
+                return true
+            } else {
+                return false
+            }
+        }
+    </script>
+</body>
+
+</html>

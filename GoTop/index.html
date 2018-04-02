@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .goTop {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: red;
+            width: 60px;
+            height: 30px;
+            position: fixed;
+            right: 20px;
+            bottom: 50px;
+        }
+        
+        .goTop:hover {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <p>段落1</p>
+        <p>段落1</p>
+        <p>段落1</p>
+        <p>段落1</p>
+        <p>段落1</p>
+        <p>段落1</p>
+        <p>段落1</p>
+        <p>段落1</p>
+        <p>段落1</p>
+        <p>段落1</p>
+        <p>段落1</p>
+        <p>段落1</p>
+        <p>段落1</p>
+        <p>段落1</p>
+
+        <p>段落2</p>
+        <p>段落2</p>
+        <p>段落2</p>
+        <p>段落2</p>
+        <p>段落2</p>
+        <p>段落2</p>
+        <p>段落2</p>
+        <p>段落2</p>
+        <p>段落2</p>
+        <p>段落2</p>
+        <p>段落2</p>
+        <p>段落2</p>
+        <p>段落2</p>
+        <p>段落2</p>
+
+        <p>段落3</p>
+        <p>段落3</p>
+        <p>段落3</p>
+        <p>段落3</p>
+        <p>段落3</p>
+        <p>段落3</p>
+        <p>段落3</p>
+        <p>段落3</p>
+        <p>段落3</p>
+        <p>段落3</p>
+        <p>段落3</p>
+        <p>段落3</p>
+        <p>段落3</p>
+        <p>段落3</p>
+    </div>
+    <div class="ct">
+        <!-- <div class="goTop">To 顶部</div> -->
+    </div>
+    <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        function GoTop($ct) {
+            this.ct = $ct;
+            this.target = $('<div class="goTop">To 顶部</div>');
+            this.init();
+        }
+
+        GoTop.prototype = {
+            init: function() {
+                this.createNode();
+                this.bindEvent();
+            },
+
+            createNode: function() {
+                let cur = this;
+                cur.target.hide()
+                cur.ct.append(cur.target);
+            },
+
+            bindEvent: function() {
+                let cur = this;
+                $(window).scroll(function() {
+                    if ($(window).scrollTop() > 300) {
+                        cur.target.show()
+                    } else {
+                        cur.target.hide()
+                    }
+                })
+
+                cur.target.click(function() {
+                    $(window).scrollTop(0);
+                })
+            }
+        }
+
+        let topButton = new GoTop($('.ct'))
+    </script>
+</body>
+
+</html>
