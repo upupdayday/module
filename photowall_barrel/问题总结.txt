@@ -1,0 +1,10 @@
+﻿1.看起来图片高度不一致，是因为出现了滚动条之后，上面一行的图片被挤到了下一行
+
+解决方法：
+1.隐藏滚动条，用css隐藏或者overflow:hidden
+         ::-webkit-scrollbar {
+            display: none;
+        }
+2.预留出滚动条的位置，给一个 17px 的padding-right
+	行不通
+3.一开始给一个 min-height，让滚动条出现，然后再去渲染

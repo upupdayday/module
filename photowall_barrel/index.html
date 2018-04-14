@@ -12,6 +12,10 @@
             padding: 0;
             box-sizing: border-box;
         }
+        /* 
+        ::-webkit-scrollbar {
+            display: none;
+        } */
         
         body {
             padding: 10px;
@@ -55,6 +59,7 @@
         main {
             position: relative;
             /* padding: 10px; */
+            min-height: 1000px;
         }
         
         main::after {
@@ -88,7 +93,7 @@
     <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
         var curPage = 1;
-        var perPageCount = 20;
+        var perPageCount = 24;
         var $mainNode = $('main');
         var mainNodeWidth = parseFloat($mainNode.width());
         var rowTotalWidth = 0;
@@ -141,6 +146,7 @@
         }
 
         function start() {
+            mainNodeWidth = parseFloat($mainNode.width());
             getData($searchInput.val(), render);
             isDataArrive = false
         }
@@ -176,12 +182,17 @@
                 imgInfo.imgWidthShow = imgInfo.ratio * rowBaseHeight;
                 if (imgInfo.imgWidthShow + rowTotalWidth <= mainNodeWidth) {
                     rowList.push(imgInfo);
+
                     rowTotalWidth += imgInfo.imgWidthShow;
+                    console.log('~~~~' + rowTotalWidth);
                 } else {
                     rowHeight = (mainNodeWidth / rowTotalWidth) * rowBaseHeight;
                     layout(rowList, rowHeight);
                     rowList = [imgInfo];
                     rowTotalWidth = imgInfo.imgWidthShow;
+                    console.log(imgInfo);
+                    console.log('@@@@' + rowList)
+                    console.log(rowList)
                 }
             });
         }
