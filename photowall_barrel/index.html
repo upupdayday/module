@@ -182,17 +182,12 @@
                 imgInfo.imgWidthShow = imgInfo.ratio * rowBaseHeight;
                 if (imgInfo.imgWidthShow + rowTotalWidth <= mainNodeWidth) {
                     rowList.push(imgInfo);
-
                     rowTotalWidth += imgInfo.imgWidthShow;
-                    console.log('~~~~' + rowTotalWidth);
                 } else {
                     rowHeight = (mainNodeWidth / rowTotalWidth) * rowBaseHeight;
                     layout(rowList, rowHeight);
                     rowList = [imgInfo];
                     rowTotalWidth = imgInfo.imgWidthShow;
-                    console.log(imgInfo);
-                    console.log('@@@@' + rowList)
-                    console.log(rowList)
                 }
             });
         }
