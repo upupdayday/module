@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+         ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        body {
+            padding: 10px;
+        }
+        
+        header {
+            width: 500px;
+            margin: 0 auto;
+            /* text-align: center; */
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #img-search {
+            width: 400px;
+            height: 30px;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        #go {
+            /* style: none; */
+            margin-left: 10px;
+            height: 30px;
+            border: 2px solid red;
+            border-radius: 3px;
+            background-color: #eee;
+            padding: 5px;
+            font-size: 16px;
+            /* line-height: 30px; */
+        }
+        
+        #load {
+            visibility: hidden;
+            height: 20px;
+            /* border: 1px solid red; */
+        }
+        /* div.wrap {
+            overflow: auto;
+            min-height: 1000px
+        } */
+        
+        main {
+            position: relative;
+            /* padding: 10px; */
+            /* min-height: 1000px; */
+            /* overflow-y: auto; */
+        }
+        
+        main::after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+        
+        main>figure {
+            float: left;
+            padding: 5px;
+        }
+        
+        main>figure img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .page-section {
+            width: 900px;
+            margin: 0 auto 20px auto;
+        }
+        
+        ul,
+        li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        
+        ul.pagination {
+            display: flex;
+            justify-content: center;
+        }
+        
+        ul.pagination>li {
+            text-align: center;
+            width: 40px;
+            padding: 10px 5px;
+            /* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
+            font-size: 13px;
+            border: 1px solid #009a61;
+            border-right: none;
+            cursor: pointer;
+        }
+        
+        ul.pagination>li:last-child {
+            border-radius: 0 4px 4px 0;
+            border-right: 1px solid #009a61;
+        }
+        
+        ul.pagination>li:first-child {
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .pages.active {
+            color: #fff;
+            background: #009a61;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <input id="img-search" placeholder="enter what you want" type="text">
+        <a id="go">GO</a>
+        <!-- <button id="go">GO</button> -->
+    </header>
+
+    <!-- <div><button>next</button></div> -->
+    <div class="wrap">
+        <main>
+        </main>
+        <div id="load">我是看不见的</div>
+    </div>
+    <div class="page-section">
+        <!-- <ul>
+            <li class="pre">&laquo;</li>
+        </ul> -->
+    </div>
+
+    <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        function PhotoShow($ct) {
+            this.init($ct, '');
+            this.bind();
+            //this.start();
+        }
+
+        PhotoShow.prototype = {
+            init: function($ct, keyword) {
+                // console.log('111');
+                // console.log(keyword)
+                this.curPage = 1;
+                this.perPageCount = 24;
+                this.$mainNode = $ct;
+                // console.log(this.$mainNode)
+                this.mainNodeWidth = parseFloat(this.$mainNode.width());
+                this.rowTotalWidth = 0;
+                this.rowBaseHeight = 200;
+                this.rowList = [];
+                this.$searchInput = $('#img-search');
+                this.keyword = keyword;
+                // console.log(this.keyword);
+                // console.log('222');
+                this.isDataArrive = true;
+
+                this.$mainNode.html('');
+                this.start(this.curPage);
+            },
+
+            bind: function() {
+
+            },
+
+            start: function(page) {
+                // console.log(this.$mainNode)
+                //this.$mainNode.html('');
+                if (!this.isDataArrive) {
+                    return;
+                }
+                if (this.isDataArrive) {
+                    this.mainNodeWidth = parseFloat(this.$mainNode.width());
+                    this.getData(this.keyword, page, this.render);
+                    this.isDataArrive = false
+                }
+            },
+
+            getData: function(keyword, page, callBack) {
+                let _this = this;
+                $.ajax({
+                    url: 'https://pixabay.com/api/',
+                    dataType: 'jsonp',
+                    data: {
+                        key: '8521696-ba89fe471d953cc300d05b61a',
+                        q: keyword,
+                        image_type: 'photo',
+                        page: page,
+                        per_page: _this.perPageCount
+                    }
+                }).done(function(ret) {
+                    if (ret) {
+                        callBack(ret, _this)
+                            //curPage++;
+                    } else {
+                        console.log("errors")
+                    }
+                })
+            },
+
+            render: function(data, photoObj) {
+                //需传入创建的对象PhotoShow，否则此处的this为window
+                let _this = photoObj;
+                //在data到达后，render时跳转到页面顶部，再清空mainnode
+                $(window).scrollTop(0);
+                _this.$mainNode.html('');
+
+                _this.isDataArrive = true
+                data.hits.forEach(function(imgInfo) {
+                    // console.log(imgInfo)
+                    let rowHeight;
+                    imgInfo.ratio = imgInfo.webformatWidth / imgInfo.webformatHeight;
+                    imgInfo.imgWidthShow = imgInfo.ratio * _this.rowBaseHeight;
+                    if (imgInfo.imgWidthShow + _this.rowTotalWidth <= _this.mainNodeWidth) {
+                        _this.rowList.push(imgInfo);
+                        _this.rowTotalWidth += imgInfo.imgWidthShow;
+                    } else {
+                        rowHeight = (_this.mainNodeWidth / _this.rowTotalWidth) * _this.rowBaseHeight;
+                        _this.layOut(rowHeight);
+                        _this.rowList = [imgInfo];
+                        _this.rowTotalWidth = imgInfo.imgWidthShow;
+                    }
+                });
+            },
+
+            layOut: function(rowHeight) {
+                let _this = this;
+                _this.rowList.forEach(function(imgInfo) {
+                    // console.log(imgInfo.tag)
+                    let $figureNode = $('<figure></figure>');
+                    let $imglink = $('<a>');
+                    let $imgNode = $('<img >');
+                    // $imgNode.src = imgInfo.webformatURL;
+                    $imgNode.attr({
+                        src: imgInfo.webformatURL,
+                        alt: imgInfo.tags,
+                        title: imgInfo.tags
+                    });
+                    $imglink.attr({
+                        href: imgInfo.pageURL,
+                        target: "view-window"
+                    });
+                    $imglink.append($imgNode);
+                    $figureNode.append($imglink);
+                    $figureNode.css('width', rowHeight * imgInfo.ratio);
+                    $figureNode.css('height', rowHeight);
+                    _this.$mainNode.append($figureNode);
+                })
+            }
+        }
+
+
+        /*-------------------------*/
+        function Pagenition(opt) {
+            this.init(opt);
+        }
+
+        Pagenition.prototype = {
+            init: function(opt) {
+                if (opt) {
+                    $.extend(this, opt);
+                }
+                this.ct.html('');
+                this.pagesPerGroup = Math.ceil(this.totalLength / this.pageGroup);
+                this.curPageGroup = 1;
+                this.render();
+                this.bind();
+            },
+
+            render: function() {
+                this.ct.hide();
+                let $ul = $('<ul>');
+                $ul.addClass('pagination');
+                let html = '<li class="pre">&laquo;</li>';
+                for (let i = (this.curPageGroup - 1) * this.pagesPerGroup + 1; i < this.curPageGroup * this.pagesPerGroup + 1; i++) {
+                    if ((this.curPageGroup - 1) * this.pagesPerGroup + 1 === i) {
+                        html += '<li class="pages active" data-page=' + i + '>' + i + '</li>';
+                    } else {
+                        html += '<li class="pages" data-page=' + i + '>' + i + '</li>';
+                    }
+                }
+                html += '<li class="next">&raquo;</li>';
+                $ul.append(html);
+                this.ct.append($ul);
+                this.pageIdx = 0;
+                console.log('111:' + this.pageIdx);
+            },
+
+            bind: function() {
+                let _this = this;
+
+                $(window).scroll(function() {
+                    if ($(window).scrollTop() > 150) {
+                        _this.ct.show();
+                    }
+                })
+
+                let $pages = _this.ct.find('li.pages');
+                $pages.bind('click', function() {
+                    $pages.removeClass('active');
+                    _this.pageIdx = $pages.index($(this));
+                    console.log('xxx:' + _this.pageIdx);
+                    $(this).addClass('active');
+                    _this.onSelect.call(p1, parseInt($(this).attr('data-page')));
+                })
+
+                let $next = _this.ct.find('.next');
+                $next.bind('click', function() {
+                    $(window).scrollTop(0);
+                    console.log('222:' + $($pages[_this.pageIdx]));
+                    let curPageNum = parseInt($($pages[_this.pageIdx]).attr('data-page'))
+                    console.log('333:' + curPageNum)
+                    console.log('444:' + _this.pagesPerGroup)
+                        /*翻到下一页，需重新渲染标签号*/
+                    if (0 === curPageNum % _this.pagesPerGroup) {
+                        if (curPageNum < _this.totalLength) {
+                            /*指定p1为上下文*/
+                            _this.onSelect.call(p1, curPageNum + 1);
+                            _this.curPageGroup++;
+                            console.log('555:' + _this.curPageGroup)
+                            console.log('666' + this.curPageGroup)
+                            for (let i = (_this.curPageGroup - 1) * _this.pagesPerGroup + 1, j = 0; j < _this.pagesPerGroup; i++, j++) {
+                                $($pages[j]).html(i).attr('data-page', i);
+                            }
+                            $pages.removeClass('active');
+                            $($pages[0]).addClass('active');
+                            _this.pageIdx = 0;
+                        } else if (curPageNum === _this.totalLength) {
+                            return;
+                        }
+                    } else {
+                        /*指定p1为上下文*/
+                        _this.onSelect.call(p1, curPageNum + 1);
+                        console.log('1111:' + _this.pageIdx)
+                        _this.pageIdx++;
+                        console.log('2222:' + _this.pageIdx)
+                        $pages.removeClass('active');
+                        $($pages[_this.pageIdx]).addClass('active');
+                    }
+
+                })
+
+                let $pre = _this.ct.find('.pre');
+                $pre.bind('click', function() {
+                    $(window).scrollTop(0);
+                    let curPageNum = parseInt($($pages[_this.pageIdx]).attr('data-page'))
+
+                    if (1 === curPageNum % _this.pagesPerGroup) {
+                        if (curPageNum > 1) {
+                            _this.onSelect.call(p1, curPageNum - 1);
+                            _this.curPageGroup--;
+                            for (let i = (_this.curPageGroup - 1) * _this.pagesPerGroup + 1, j = 0; j < _this.pagesPerGroup; i++, j++) {
+                                $($pages[j]).html(i).attr('data-page', i);
+                            }
+                            $pages.removeClass('active');
+                            $($pages[_this.pagesPerGroup - 1]).addClass('active');
+                            _this.pageIdx = _this.pagesPerGroup - 1;
+
+                        } else if (curPageNum === 1) {
+                            return;
+                        }
+
+                    } else {
+                        /*指定p1为上下文*/
+                        _this.onSelect.call(p1, curPageNum - 1);
+                        // if ()
+                        _this.pageIdx--;
+                        console.log(_this.pageIdx)
+                        $pages.removeClass('active');
+                        $($pages[_this.pageIdx]).addClass('active');
+                    }
+
+                })
+            }
+
+        }
+        var $searchInput = $('#img-search');
+
+        let p1 = new PhotoShow($('main'));
+        let pageselect = new Pagenition({
+            ct: $('.page-section'),
+            totalLength: 50,
+            pageGroup: 5,
+            onSelect: p1.start
+        });
+
+        function throttle(fn, delay) {
+            var timer = null
+            return function() {
+                var context = this
+                clearTimeout(timer)
+                timer = setTimeout(function() {
+                    fn.apply(context, arguments);
+                }, delay)
+            }
+        }
+        let $go = $('#go');
+        $go.click(
+            throttle(function() {
+                console.log($searchInput.val())
+                p1.init($('main'), $searchInput.val());
+                pageselect.init();
+            }, 200)
+        )
+
+        $(window).resize(
+            throttle(function() {
+                p1.start(pageselect.pageIdx)
+            }, 200)
+        )
+
+        // let $next = $('button');
+        // let count = 1;
+        // $next.click(throttle(function() {
+        //     p1.start(++count)
+        // }, 200))
+    </script>
+</body>
+
+</html>
