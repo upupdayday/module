@@ -22,7 +22,7 @@ let $go = $('#go');
 $go.click(
     throttle(function() {
         console.log($searchInput.val())
-        p1.init($('main'), $searchInput.val());
+        p1.init($('.imgShow'), $searchInput.val());
         pageselect.init();
     }, 200)
 )

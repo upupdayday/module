@@ -22,7 +22,7 @@ PhotoShow.prototype = {
         // console.log('222');
         this.isDataArrive = true;
 
-        this.$mainNode.html('');
+        // this.$mainNode.html('');
         this.start(this.curPage);
     },
 
@@ -68,8 +68,12 @@ PhotoShow.prototype = {
     render: function(data, photoObj) {
         //需传入创建的对象PhotoShow，否则此处的this为window
         let _this = photoObj;
-        //在data到达后，render时跳转到页面顶部，再清空mainnode
-        $(window).scrollTop(0);
+        //在data到达后，render时跳转到搜索栏位置，再清空mainnode
+        let positionY = $('.inputSearch').position().top;
+        console.log('------:' + positionY);
+        $(window).scrollTop(positionY);
+
+
         _this.$mainNode.html('');
 
         _this.isDataArrive = true
