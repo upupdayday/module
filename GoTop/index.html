@@ -7,18 +7,64 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
-        .goTop {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: red;
-            width: 60px;
-            height: 30px;
-            position: fixed;
-            right: 20px;
-            bottom: 50px;
+        * {
+            box-sizing: border-box;
         }
         
-        .goTop:hover {
+        @font-face {
+            font-family: 'iconfont';
+            /* project id 710761 */
+            src: url('https://at.alicdn.com/t/font_710761_cadoagxw19i.eot');
+            src: url('https://at.alicdn.com/t/font_710761_cadoagxw19i.eot?#iefix') format('embedded-opentype'), url('https://at.alicdn.com/t/font_710761_cadoagxw19i.woff') format('woff'), url('https://at.alicdn.com/t/font_710761_cadoagxw19i.ttf') format('truetype'), url('https://at.alicdn.com/t/font_710761_cadoagxw19i.svg#iconfont') format('svg');
+        }
+        
+        .icon-font {
+            font-family: "iconfont" !important;
+            font-size: 28px;
+            color: #fff;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .box {
+            position: fixed;
+            right: 0px;
+            bottom: 100px;
+            /* right: 5px; */
+            display: flex;
+        }
+        
+        .top {
+            height: 40px;
+            line-height: 30px;
+            padding: 5px;
+            background-color: #7a6e6e;
+            display: inline-block;
+        }
+        
+        .icon {
+            width: 40px;
+            text-align: center;
+            border-radius: 3px;
+            z-index: 2;
+        }
+        
+        .text {
+            position: absolute;
+            width: 75px;
+            font-size: 14px;
+            margin-right: -75px;
+            border-radius: 3px;
+            padding-left: 10px;
+            opacity: 0;
+            color: #fff;
+            /* display: none; */
+            /*padding-top: 10px;
+            padding-bottom: 10px; */
+        }
+        
+        .box:hover {
             cursor: pointer;
         }
     </style>
@@ -74,11 +120,20 @@
     <div class="ct">
         <!-- <div class="goTop">To 顶部</div> -->
     </div>
-    <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
+    <!-- <div class="box">
+        <span class="top text">顶部</span>
+        <span class="icon-font top icon">&#xe62c;</span>
+    </div> -->
+    <!-- <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script> -->
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script>
         function GoTop($ct) {
             this.ct = $ct;
-            this.target = $('<div class="goTop">To 顶部</div>');
+            this.target = $(
+                '<div class="box">\
+                 <span class = "top text"> 顶部 </span>\
+                 <span class = "icon-font top icon">&#xe62c;</span>\
+                 </div>');
             this.init();
         }
 
@@ -89,12 +144,14 @@
             },
 
             createNode: function() {
+                console.log('111');
                 let cur = this;
                 cur.target.hide()
                 cur.ct.append(cur.target);
             },
 
             bindEvent: function() {
+                console.log('222');
                 let cur = this;
                 $(window).scroll(function() {
                     if ($(window).scrollTop() > 300) {
@@ -107,6 +164,28 @@
                 cur.target.click(function() {
                     $(window).scrollTop(0);
                 })
+
+                cur.target.hover(
+                    function() {
+                        console.log('333')
+                        $(this).find('.top')
+                            .css('background-color', '#f10215')
+                        $(this).find('.text')
+                            .css('opacity', '1')
+                            .animate({
+                                right: '80px',
+                            }, 'normal');
+                    },
+                    function() {
+                        $(this).find('.top')
+                            .css('background-color', '#7a6e6e')
+                        $(this).find('.text')
+                            .animate({
+                                right: '-80px',
+                            }, 'normal')
+                            .css('opacity', '0')
+                    }
+                )
             }
         }
 

@@ -1,0 +1,56 @@
+@font-face {
+    font-family: 'iconfont';
+    /* project id 710761 */
+    src: url('https://at.alicdn.com/t/font_710761_cadoagxw19i.eot');
+    src: url('https://at.alicdn.com/t/font_710761_cadoagxw19i.eot?#iefix') format('embedded-opentype'), url('https://at.alicdn.com/t/font_710761_cadoagxw19i.woff') format('woff'), url('https://at.alicdn.com/t/font_710761_cadoagxw19i.ttf') format('truetype'), url('https://at.alicdn.com/t/font_710761_cadoagxw19i.svg#iconfont') format('svg');
+}
+
+.icon-font {
+    font-family: "iconfont" !important;
+    font-size: 28px;
+    color: #fff;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.box {
+    position: fixed;
+    right: 0px;
+    bottom: 100px;
+    /* right: 5px; */
+    display: flex;
+}
+
+.top {
+    height: 40px;
+    line-height: 30px;
+    padding: 5px;
+    background-color: #7a6e6e;
+    display: inline-block;
+}
+
+.icon {
+    width: 40px;
+    text-align: center;
+    border-radius: 3px;
+    z-index: 2;
+}
+
+.text {
+    position: absolute;
+    width: 75px;
+    font-size: 14px;
+    margin-right: -75px;
+    border-radius: 3px;
+    padding-left: 10px;
+    opacity: 0;
+    color: #fff;
+    /* display: none; */
+    /*padding-top: 10px;
+            padding-bottom: 10px; */
+}
+
+.box:hover {
+    cursor: pointer;
+}
