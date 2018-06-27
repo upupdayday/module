@@ -1,10 +1,10 @@
-// let p1 = new PhotoShow($('.imgShow'));
-// let pageselect = new Pagenition({
-//     ct: $('.page-section'),
-//     totalLength: 50,
-//     pageGroup: 5,
-//     onSelect: p1.start
-// });
+let p1 = new PhotoShow($('.imgShow'));
+let pageselect = new Pagenition({
+    ct: $('.page-section'),
+    totalLength: 50,
+    pageGroup: 5,
+    onSelect: p1.start
+});
 
 function throttle(fn, delay) {
     var timer = null
@@ -17,23 +17,23 @@ function throttle(fn, delay) {
     }
 }
 
-// let $searchInput = $('#img-search');
-// let $go = $('#go');
-// $go.click(
-//     throttle(function() {
-//         console.log($searchInput.val())
-//         p1.init($('main'), $searchInput.val());
-//         pageselect.init();
-//     }, 200)
-// )
+let $searchInput = $('#img-search');
+let $go = $('#go');
+$go.click(
+    throttle(function() {
+        console.log($searchInput.val())
+        p1.init($('main'), $searchInput.val());
+        pageselect.init();
+    }, 200)
+)
 
-// $(window).resize(
-//     throttle(function() {
-//         p1.start(pageselect.pageIdx)
-//     }, 200)
-// )
+$(window).resize(
+    throttle(function() {
+        p1.start(pageselect.pageIdx)
+    }, 200)
+)
 
-// let topButton = new GoTop($('.ct-go-top'));
+let topButton = new GoTop($('.ct-go-top'));
 
 let headimgSrc = ['img/img1.jpg',
     'img/img2.jpg',
