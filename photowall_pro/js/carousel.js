@@ -12,10 +12,12 @@ imgPlay.prototype = {
         let html3 = '';
         let $ul1 = $('<ul>');
         let $ul2 = $('<ul>');
+        let $div = $('<div>');
         for (let i = 0; i < this.imgSrc.length; i++) {
             // html1 += '<li><a href="#"><img src="' + this.imgSrc[i] + '" alt=""></a></li>'
             html1 += '<li style="background-image:url(' + this.imgSrc[i] + ')"></li>'
             if (i === 0) {
+                /*a 如果href不为空，点击时默认效果会跳至页面顶部，去掉*/
                 html2 += '<li class="active"></li>';
             } else {
                 html2 += '<li></li>';
@@ -25,18 +27,25 @@ imgPlay.prototype = {
         $ul1.addClass('img-ct clearfix');
         $ul2.append(html2);
         $ul2.addClass('menu');
+
+        html3 = '<a  class="pre" ><</a>';
+        $div.append(html3);
+        $div.append($ul2);
+        html3 = '<a class = "next" >> </a>';
+        $div.append(html3);
+        $div.addClass('wrap-menu');
+
         this.$ct.append($ul1);
-        this.$ct.append($ul2);
-        html3 = '<a class="pre" href="#"><</a>\
-                <a class="next" href="#">></a>'
-        this.$ct.append(html3);
+        this.$ct.append($div);
+
+        // this.$ct.append(html3);
 
         this.$imgCt = this.$ct.find('.img-ct');
         this.$imgs = this.$ct.find('.img-ct>li');
         /*用窗口的宽设置背景li的宽度*/
         this.imgWidth = $(window).width();
         /*要设置容器的高度*/
-        this.$ct.height(this.imgWidth * 9 / 16);
+        this.$ct.height(this.imgWidth * 9 / 32);
         this.$imgs.width(this.imgWidth);
         this.imgCount = this.$imgs.length;
         this.$menu = this.$ct.find('.menu');

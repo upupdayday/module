@@ -46,7 +46,8 @@ Pagenition.prototype = {
             $pages.removeClass('active');
             _this.pageIdx = $pages.index($(this));
             $(this).addClass('active');
-            _this.onSelect.call(p1, parseInt($(this).attr('data-page')));
+			/*使用传入的对象做上下文*/
+            _this.onSelect.call(_this.textObj, parseInt($(this).attr('data-page')));
         })
 
         let $next = _this.ct.find('.next');
@@ -56,8 +57,8 @@ Pagenition.prototype = {
                 /*翻到下一页，需重新渲染标签号*/
             if (0 === curPageNum % _this.pagesPerGroup) {
                 if (curPageNum < _this.totalLength) {
-                    /*指定p1为上下文*/
-                    _this.onSelect.call(p1, curPageNum + 1);
+                    /*传入的对象为上下文*/
+                    _this.onSelect.call(_this.textObj, curPageNum + 1);
                     _this.curPageGroup++;
                     for (let i = (_this.curPageGroup - 1) * _this.pagesPerGroup + 1, j = 0; j < _this.pagesPerGroup; i++, j++) {
                         $($pages[j]).html(i).attr('data-page', i);
@@ -69,8 +70,8 @@ Pagenition.prototype = {
                     return;
                 }
             } else {
-                /*指定p1为上下文*/
-                _this.onSelect.call(p1, curPageNum + 1);
+                /*传入的对象为上下文*/
+                _this.onSelect.call(_this.textObj, curPageNum + 1);
                 _this.pageIdx++;
                 console.log('2222:' + _this.pageIdx)
                 $pages.removeClass('active');
@@ -100,8 +101,8 @@ Pagenition.prototype = {
                 }
 
             } else {
-                /*指定p1为上下文*/
-                _this.onSelect.call(p1, curPageNum - 1);
+                /*传入的对象为上下文*/
+                _this.onSelect.call(_this.textObj, curPageNum - 1);
                 // if ()
                 _this.pageIdx--;
                 $pages.removeClass('active');

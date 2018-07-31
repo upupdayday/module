@@ -12,7 +12,7 @@ PhotoShow.prototype = {
         this.perPageCount = 48;
         this.$mainNode = $ct;
         // console.log(this.$mainNode)
-        this.mainNodeWidth = parseFloat(this.$mainNode.width());
+        //this.mainNodeWidth = parseFloat(this.$mainNode.width());
         this.rowTotalWidth = 0;
         this.rowBaseHeight = 200;
         this.rowList = [];
@@ -27,6 +27,13 @@ PhotoShow.prototype = {
     },
 
     bind: function() {
+        let _this = this;
+        $(window).resize(
+            throttle(function() {
+                console.log('resize~~~~')
+                _this.render(_this);
+            }, 200)
+        )
 
     },
 
@@ -37,7 +44,7 @@ PhotoShow.prototype = {
             return;
         }
         if (this.isDataArrive) {
-            this.mainNodeWidth = parseFloat(this.$mainNode.width());
+            // this.mainNodeWidth = parseFloat(this.$mainNode.width());
             this.getData(this.keyword, page, this.render);
             this.isDataArrive = false
         }
@@ -57,7 +64,8 @@ PhotoShow.prototype = {
             }
         }).done(function(ret) {
             if (ret) {
-                callBack(ret, _this)
+                _this.curPageData = ret;
+                callBack(_this)
                     //curPage++;
             } else {
                 console.log("errors")
@@ -65,19 +73,22 @@ PhotoShow.prototype = {
         })
     },
 
-    render: function(data, photoObj) {
+    render: function(photoObj) {
         //需传入创建的对象PhotoShow，否则此处的this为window
         let _this = photoObj;
-        //在data到达后，render时跳转到搜索栏位置，再清空mainnode
+        console.log('render~~~~')
+        console.log(_this)
+            //在data到达后，render时跳转到搜索栏位置，再清空mainnode
         let positionY = $('.inputSearch').position().top;
         console.log('------:' + positionY);
         $(window).scrollTop(positionY);
 
 
         _this.$mainNode.html('');
-
+        _this.mainNodeWidth = parseFloat(_this.$mainNode.width());
+        console.log('-----:' + _this.mainNodeWidth)
         _this.isDataArrive = true
-        data.hits.forEach(function(imgInfo) {
+        _this.curPageData.hits.forEach(function(imgInfo) {
             // console.log(imgInfo)
             let rowHeight;
             imgInfo.ratio = imgInfo.webformatWidth / imgInfo.webformatHeight;

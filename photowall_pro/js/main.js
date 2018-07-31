@@ -3,7 +3,8 @@ let pageselect = new Pagenition({
     ct: $('.page-section'),
     totalLength: 50,
     pageGroup: 5,
-    onSelect: p1.start
+    onSelect: p1.start,
+	textObj:p1
 });
 
 function throttle(fn, delay) {
